@@ -118,6 +118,16 @@
             </div>
 
             <div class="input-group">
+                <label for="branch_id">Home Branch</label>
+                <select id="branch_id" name="branch_id" required>
+                    <option value="">-- Select a Branch --</option>
+                    <?php foreach ($branches as $branch): ?>
+                        <option value="<?= esc($branch['id']) ?>"><?= esc($branch['name']) ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+
+            <div class="input-group">
                 <label for="role_id">Choose Role</label>
                 <select id="role_id" name="role_id" required>
                     <option value="">-- Select a Role --</option>

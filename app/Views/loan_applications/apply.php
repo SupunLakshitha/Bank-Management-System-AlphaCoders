@@ -557,7 +557,7 @@
                                             data-name="<?= esc($c['full_name']) ?>" 
                                             data-nic="<?= esc($c['nic'] ?? 'N/A') ?>" 
                                             data-phone="<?= esc($c['phone'] ?? 'N/A') ?>">
-                                        <?= esc($c['customer_id']) ?> - <?= esc($c['full_name']) ?> (NIC: <?= esc($c['nic'] ?? 'N/A') ?>)
+                                        <?= esc($c['customer_id']) ?> - <?= esc($c['full_name']) ?> (<?= esc($c['branch_name'] ?? 'No branch') ?>)
                                     </option>
                                 <?php endforeach; ?>
                             </select>
