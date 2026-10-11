@@ -159,6 +159,47 @@
                 <?php endif; ?>
             </div>
         <?php endif; ?>
+        
+
+                  <?php if (in_array($role, ['SUPER ADMIN', 'Branch Manager', 'Teller'])): ?>
+            <h3 style="margin-top:32px;color:#1e1e2f;">Fixed Deposits</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 16px;">
+                <?php if (in_array($role, ['SUPER ADMIN', 'Branch Manager'])): ?>
+                    <div style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-left: 4px solid #f59e0b; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <h3 style="font-size: 17px; margin-bottom: 8px; color: #1e1e2f;">FD Product Engine</h3>
+                            <p style="color: #666; font-size: 13px; margin-bottom: 16px;">Define FD products with interest rates, tenures and minimum amounts.</p>
+                        </div>
+                        <a href="<?= base_url('fd/products') ?>" style="display: inline-block; padding: 8px 16px; background: #f59e0b; color: white; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: 600; width: fit-content;">Manage FD Products &rarr;</a>
+                    </div>
+                    <div style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-left: 4px solid #8b5cf6; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <h3 style="font-size: 17px; margin-bottom: 8px; color: #1e1e2f;">Interest Accrual Logs</h3>
+                            <p style="color: #666; font-size: 13px; margin-bottom: 16px;">Audit the daily interest accrual entries for all active FDs.</p>
+                        </div>
+                        <a href="<?= base_url('fd/interest-logs') ?>" style="display: inline-block; padding: 8px 16px; background: #8b5cf6; color: white; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: 600; width: fit-content;">View Logs &rarr;</a>
+                    </div>
+                <?php endif; ?>
+                <?php if (in_array($role, ['SUPER ADMIN', 'Teller'])): ?>
+                    <div style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-left: 4px solid #0ea5e9; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <h3 style="font-size: 17px; margin-bottom: 8px; color: #1e1e2f;">Open Fixed Deposit</h3>
+                            <p style="color: #666; font-size: 13px; margin-bottom: 16px;">Open an FD for a customer using funds from their savings account.</p>
+                        </div>
+                        <a href="<?= base_url('fd/open') ?>" style="display: inline-block; padding: 8px 16px; background: #0ea5e9; color: white; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: 600; width: fit-content;">Open FD &rarr;</a>
+                    </div>
+                <?php endif; ?>
+                <div style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-left: 4px solid #14b8a6; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <h3 style="font-size: 17px; margin-bottom: 8px; color: #1e1e2f;">FD Calculator</h3>
+                        <p style="color: #666; font-size: 13px; margin-bottom: 16px;">Preview maturity amount and interest before creating an FD.</p>
+                    </div>
+                    <a href="<?= base_url('fd/calculator') ?>" style="display: inline-block; padding: 8px 16px; background: #14b8a6; color: white; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: 600; width: fit-content;">Open Calculator &rarr;</a>
+                </div>
+            </div>
+        <?php endif; ?>          
+
+
     </div>
 
 </body>

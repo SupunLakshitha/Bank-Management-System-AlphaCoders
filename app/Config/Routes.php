@@ -65,6 +65,31 @@ $routes->post('loans/applications/reject/(:num)', 'LoanApprovalController::rejec
 $routes->get('loans/active', 'LoanApprovalController::activeLoans', ['filter' => 'auth']);
 $routes->get('loans/schedule/(:num)', 'LoanApprovalController::schedule/$1', ['filter' => 'auth']);
 
+
+
+// FD Web Pages: Branch Manager / Super Admin
+$routes->group('fd', ['filter' => ['auth', 'role:Branch Manager,SUPER ADMIN']], static function ($routes) {
+    $routes->get('products', 'FdPageController::products');
+    $routes->post('products/save', 'FdPageController::productSave');
+    $routes->post('products/save/(:num)', 'FdPageController::productSave/$1');
+    $routes->post('products/toggle/(:num)', 'FdPageController::productToggle/$1');
+    $routes->get('interest-logs', 'FdPageController::logs');
+});
+
+// FD Web Pages: Teller / Super Admin
+$routes->group('fd', ['filter' => ['auth', 'role:Teller,SUPER ADMIN']], static function ($routes) {
+    $routes->get('open', 'FdPageController::open');
+    $routes->post('open', 'FdPageController::openSubmit');
+    $routes->get('certificate/(:num)', 'FdPageController::certificate/$1');
+});
+
+// FD Calculator: Branch Manager / Teller / Super Admin
+$routes->get('fd/calculator', 'FdPageController::calculator', ['filter' => ['auth', 'role:Branch Manager,Teller,SUPER ADMIN']]);
+$routes->post('fd/calculator', 'FdPageController::calculator', ['filter' => ['auth', 'role:Branch Manager,Teller,SUPER ADMIN']]);
+
+
+
+
 // API Routes
 $routes->group('api/v1', static function ($routes) {
     $routes->post('auth/login', 'Api\AuthApi::login');
@@ -76,6 +101,12 @@ $routes->group('api/v1', static function ($routes) {
         $routes->post('/', 'Api\FdProductApi::create');
         $routes->put('(:num)', 'Api\FdProductApi::update/$1');
         $routes->patch('(:num)/toggle', 'Api\FdProductApi::toggle/$1');
+    });
+
+    // FD Account Creation (Story 8): Teller / Super Admin only
+    $routes->group('fd-accounts', ['filter' => ['auth', 'role:Teller,SUPER ADMIN']], static function ($routes) {
+        $routes->post('/', 'Api\FdAccountApi::create');
+        $routes->get('(:num)/certificate', 'Api\FdAccountApi::certificate/$1');
     });
 
     // Loan Products: Branch Manager / Super Admin only
