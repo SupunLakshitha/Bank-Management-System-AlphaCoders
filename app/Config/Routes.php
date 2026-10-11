@@ -53,6 +53,12 @@ $routes->group('api/v1', static function ($routes) {
         $routes->patch('(:num)/toggle', 'Api\FdProductApi::toggle/$1');
     });
 
+    // FD Account Creation (Story 8): Teller / Super Admin only
+    $routes->group('fd-accounts', ['filter' => ['auth', 'role:Teller,SUPER ADMIN']], static function ($routes) {
+        $routes->post('/', 'Api\FdAccountApi::create');
+        $routes->get('(:num)/certificate', 'Api\FdAccountApi::certificate/$1');
+    });
+
     // Loan Products: Branch Manager / Super Admin only
     $routes->group('loan-products', ['filter' => ['auth', 'role:Branch Manager,SUPER ADMIN']], static function ($routes) {
         $routes->get('/', 'Api\LoanProductApi::index');
