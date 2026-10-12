@@ -87,10 +87,54 @@ $routes->group('fd', ['filter' => ['auth', 'role:Teller,SUPER ADMIN']], static f
 $routes->get('fd/calculator', 'FdPageController::calculator', ['filter' => ['auth', 'role:Branch Manager,Teller,SUPER ADMIN']]);
 $routes->post('fd/calculator', 'FdPageController::calculator', ['filter' => ['auth', 'role:Branch Manager,Teller,SUPER ADMIN']]);
 
+// Phase 1: Customer Management Web Routes (Account Officer, Branch Manager, Super Admin, Teller)
+$routes->group('customers', ['filter' => ['auth', 'role:Account Officer,Branch Manager,SUPER ADMIN,Teller']], static function ($routes) {
+    $routes->get('/', 'CustomerController::index');
+    $routes->get('create', 'CustomerController::create');
+    $routes->post('create', 'CustomerController::createSubmit');
+    $routes->get('view/(:num)', 'CustomerController::view/$1');
+    $routes->get('edit/(:num)', 'CustomerController::edit/$1');
+    $routes->post('edit/(:num)', 'CustomerController::editSubmit/$1');
+    $routes->post('kyc/(:num)', 'CustomerController::kycSubmit/$1');
+});
 
+// Phase 1: Bank Accounts Web Routes (Account Officer, Teller, Branch Manager, Super Admin)
+$routes->group('accounts', ['filter' => ['auth', 'role:Account Officer,Teller,Branch Manager,SUPER ADMIN']], static function ($routes) {
+    $routes->get('/', 'AccountController::index');
+    $routes->get('open', 'AccountController::open');
+    $routes->post('open', 'AccountController::openSubmit');
+    $routes->get('view/(:num)', 'AccountController::view/$1');
+    $routes->post('toggle-status/(:num)', 'AccountController::toggleStatus/$1');
+});
 
+// Phase 2: Deposits Web Routes (Teller, Branch Manager, Super Admin)
+$routes->group('deposits', ['filter' => ['auth', 'role:Teller,Branch Manager,SUPER ADMIN']], static function ($routes) {
+    $routes->get('/', 'DepositController::index');
+    $routes->get('create', 'DepositController::create');
+    $routes->post('create', 'DepositController::createSubmit');
+    $routes->get('receipt/(:num)', 'DepositController::receipt/$1');
+});
 
-// API Routes
+// Phase 2: Withdrawals Web Routes (Teller, Branch Manager, Super Admin)
+$routes->group('withdrawals', ['filter' => ['auth', 'role:Teller,Branch Manager,SUPER ADMIN']], static function ($routes) {
+    $routes->get('/', 'WithdrawalController::index');
+    $routes->get('create', 'WithdrawalController::create');
+    $routes->post('create', 'WithdrawalController::createSubmit');
+    $routes->get('receipt/(:num)', 'WithdrawalController::receipt/$1');
+});
+
+// General Operations & Lookup APIs
+$routes->get('api/customers/search', 'Api\CustomerApi::search', ['filter' => 'auth']);
+$routes->get('api/customers/(:num)', 'Api\CustomerApi::get/$1', ['filter' => 'auth']);
+$routes->post('api/customers/kyc/(:num)', 'Api\CustomerApi::updateKyc/$1', ['filter' => ['auth', 'role:Account Officer,Branch Manager,SUPER ADMIN']]);
+
+$routes->get('api/accounts/lookup/(:segment)', 'Api\AccountApi::lookup/$1', ['filter' => 'auth']);
+$routes->get('api/accounts/by-customer/(:num)', 'Api\AccountApi::byCustomer/$1', ['filter' => 'auth']);
+$routes->post('api/accounts/open', 'Api\AccountApi::open', ['filter' => ['auth', 'role:Account Officer,Branch Manager,SUPER ADMIN']]);
+
+$routes->post('api/operations/deposit', 'Api\TransactionOperationApi::deposit', ['filter' => ['auth', 'role:Teller,Branch Manager,SUPER ADMIN']]);
+$routes->post('api/operations/withdraw', 'Api\TransactionOperationApi::withdraw', ['filter' => ['auth', 'role:Teller,Branch Manager,SUPER ADMIN']]);
+
 $routes->group('api/v1', static function ($routes) {
     $routes->post('auth/login', 'Api\AuthApi::login');
     $routes->post('auth/signup', 'Api\AuthApi::signup');

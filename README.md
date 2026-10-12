@@ -1,69 +1,150 @@
-# CodeIgniter 4 Application Starter
+# Bank Management System (BMS) - AlphaCoders
 
-## What is CodeIgniter?
+A secure, enterprise-grade Bank Management System built on **CodeIgniter 4**, **PHP 8.2**, and **MySQL (XAMPP)** for **EGOTECHWORLD PVT LTD**.
 
-CodeIgniter is a PHP full-stack web framework that is light, fast, flexible and secure.
-More information can be found at the [official site](https://codeigniter.com).
+---
 
-This repository holds a composer-installable app starter.
-It has been built from the
-[development repository](https://github.com/codeigniter4/CodeIgniter4).
+## 👥 Team Assignments
 
-More information about the plans for version 4 can be found in [CodeIgniter 4](https://forum.codeigniter.com/forumdisplay.php?fid=28) on the forums.
+| Member | Assigned Phases / Scope |
+| :--- | :--- |
+| **Thilakshi (Thilu)** | **Customers, Accounts, Deposits & Withdrawals** |
+| **Navodya** | Phase 3 (Ledger + Transfers) |
+| **Thehara** | Phase 4 (Loans + EMI + Repayment Schedules) |
+| **Supun** | Phase 5 (Fixed Deposits + Interest Accruals) |
+| **Dumidu** | Phase 6 (Employees + Roles + Branches) |
+| **Dhana** | Phase 7 (Reports + Dashboard) & Phase 8 (Audit + Security + Reconciliation) |
 
-You can read the [user guide](https://codeigniter.com/user_guide/)
-corresponding to the latest version of the framework.
+---
 
-## Installation & updates
+## 🚀 Thilakshi's Contribution & Features Implemented
 
-`composer create-project codeigniter4/appstarter` then `composer update` whenever
-there is a new release of the framework.
+### 📌 Customer Management & KYC
+Comprehensive customer onboarding and KYC (Know Your Customer) identity lifecycle management:
+- **KYC & Demographic Profiles:** Captures full name, NIC / passport number, date of birth, residential address, telephone, email, occupation, branch allocation, and registration date.
+- **KYC Status Workflow:** Three-tier verification pipeline (`Pending`, `Verified`, `Rejected`) with review controls.
+- **Customer 360° Portfolio View:** Unified dashboard displaying customer identity, verification status, contact details, total balance across facilities, and all associated bank accounts.
+- **Search & Filtering:** Real-time directory search by customer ID (e.g. `C001`), name, NIC, phone, and branch filters.
+- **Components Developed:**
+  - `app/Database/Migrations/*_UpdateCustomersTable.php`
+  - `app/Models/CustomerModel.php`
+  - `app/Services/CustomerService.php`
+  - `app/Controllers/CustomerController.php`
+  - `app/Controllers/Api/CustomerApi.php`
+  - `app/Views/customers/` (`index.php`, `create.php`, `view.php`, `edit.php`)
 
-When updating, check the release notes to see if there are any changes you might need to apply
-to your `app` folder. The affected files can be copied or merged from
-`vendor/codeigniter4/framework/app`.
+---
 
-## Setup
+### 📌 Bank Accounts Management
+Multi-tier banking facilities catering to retail and commercial customer needs:
+- **Diverse Account Types:** Configured products for **Savings Account** (5.00% interest), **Current Account** (0.00% interest, checking), **Business Account** (3.00% interest), and **Fixed Deposit Source Account** (6.50% interest).
+- **Automated Account Numbering:** Generates secure, collision-free 10-digit bank account numbers (e.g. `1000012345`).
+- **Account Facility Opening:** Account Officer terminal with dynamic rule previews (interest rate, minimum opening balance) and automated initial deposit crediting.
+- **Lifecycle Status Control:** Status toggling between `active`, `suspended`, and `closed`.
+- **Account Statement & Ledger:** Complete chronological statement combining all deposits and withdrawals with before/after balances.
+- **Components Developed:**
+  - `app/Database/Migrations/*_CreateAccountTypesTable.php`
+  - `app/Database/Migrations/*_CreateAccountsTable.php`
+  - `app/Database/Seeds/AccountTypeSeeder.php`
+  - `app/Database/Seeds/AccountSeeder.php`
+  - `app/Models/AccountModel.php`
+  - `app/Models/AccountTypeModel.php`
+  - `app/Services/AccountService.php`
+  - `app/Controllers/AccountController.php`
+  - `app/Controllers/Api/AccountApi.php`
+  - `app/Views/accounts/` (`index.php`, `open.php`, `view.php`)
 
-Copy `env` to `.env` and tailor for your app, specifically the baseURL
-and any database settings.
+---
 
-## Important Change with index.php
+### 📌 Deposits Module
+Secure financial pipeline recording incoming funds crediting customer accounts:
+- **Teller Deposit Terminal:** Real-time account number lookup via AJAX showing account holder name, KYC badge, and current balance.
+- **Dual-Entry Calculation Preview:** Real-time preview of Previous Balance + Deposit Amount = Updated Balance.
+- **Multi-Method Support:** Accepts **Cash**, **Cheque**, and **Online Transfers** with external reference/slip tracking.
+- **Transaction Concurrency & Atomicity:** Uses database transactions with `FOR UPDATE` row-level locking to prevent race conditions.
+- **Printable Deposit Receipts:** Official bank receipt view formatted with teller name, date/time, breakdown, and signature lines (`window.print()`).
+- **Components Developed:**
+  - `app/Database/Migrations/*_CreateDepositsTable.php`
+  - `app/Models/DepositModel.php`
+  - `app/Controllers/DepositController.php`
+  - `app/Views/deposits/` (`index.php`, `create.php`, `receipt.php`)
 
-`index.php` is no longer in the root of the project! It has been moved inside the *public* folder,
-for better security and separation of components.
+---
 
-This means that you should configure your web server to "point" to your project's *public* folder, and
-not to the project root. A better practice would be to configure a virtual host to point there. A poor practice would be to point your web server to the project root and expect to enter *public/...*, as the rest of your logic and the
-framework are exposed.
+### 📌 Withdrawals Module
+Rigorous, audit-proof cash payout system with automated overdraft defense:
+- **Strict Available Balance Validation:** Enforces $\text{Available Balance} \ge \text{Withdrawal Amount}$ at both client-side and database transaction layers.
+- **Minimum Balance Protection:** Prevents withdrawals that would reduce balance below the account type's mandatory minimum.
+- **Teller Cash Payout Terminal:** Live balance deduction calculator displaying real-time remaining funds and automatic overdraft warnings.
+- **Audit Logging:** Captures withdrawal ID (`WTH-YYYYMMDD-XXXX`), teller ID, method, previous balance, and new balance.
+- **Printable Withdrawal Vouchers:** Official cash disbursement slip with customer and teller verification blocks.
+- **Components Developed:**
+  - `app/Database/Migrations/*_CreateWithdrawalsTable.php`
+  - `app/Models/WithdrawalModel.php`
+  - `app/Services/DepositWithdrawalService.php`
+  - `app/Controllers/WithdrawalController.php`
+  - `app/Controllers/Api/TransactionOperationApi.php`
+  - `app/Views/withdrawals/` (`index.php`, `create.php`, `receipt.php`)
 
-**Please** read the user guide for a better explanation of how CI4 works!
+---
 
-## Repository Management
+## 🔑 Role-Based Access & Test Credentials
 
-We use GitHub issues, in our main repository, to track **BUGS** and to track approved **DEVELOPMENT** work packages.
-We use our [forum](http://forum.codeigniter.com) to provide SUPPORT and to discuss
-FEATURE REQUESTS.
+The system implements Role-Based Access Control (RBAC) across employees and customers:
 
-This repository is a "distribution" one, built by our release preparation script.
-Problems with it can be raised on our forum, or as issues in the main repository.
+| Role | Username | Password | Accessible Modules |
+| :--- | :--- | :--- | :--- |
+| **SUPER ADMIN** | `admin` | `admin123` | System-wide access across all modules |
+| **Branch Manager** | `branch-manager` | `branch-manager123` | Customers, Accounts, Operations, Loan approvals, FD products |
+| **Account Officer** | `account-officer` | `account-officer123` | Customer KYC onboarding & Bank account opening |
+| **Teller** | `teller` | `teller123` | Deposit terminal, Withdrawal terminal, Account lookups, FD creation |
+| **Loan Officer** | `loan-officer` | `loan-officer123` | Loan applications, appraisal & documents |
+| **Auditor** | `auditor` | `auditor123` | Read-only ledger audits, transactions & logs |
+| **Customer** | `customer` | `customer123` | Customer self-service portal |
 
-## Server Requirements
+---
 
-PHP version 8.2 or higher is required, with the following extensions installed:
+## 🛠️ Setup & Running Locally
 
-- [intl](http://php.net/manual/en/intl.requirements.php)
-- [mbstring](http://php.net/manual/en/mbstring.installation.php)
+### 1. Prerequisites
+- **XAMPP** (with Apache and MySQL / MariaDB running)
+- **PHP 8.2+** with `intl`, `mbstring`, `mysqli`, and `curl` extensions enabled
 
-> [!WARNING]
-> - The end of life date for PHP 7.4 was November 28, 2022.
-> - The end of life date for PHP 8.0 was November 26, 2023.
-> - The end of life date for PHP 8.1 was December 31, 2025.
-> - If you are still using below PHP 8.2, you should upgrade immediately.
-> - The end of life date for PHP 8.2 will be December 31, 2026.
+### 2. Database Migration & Seeding
+From the project root (`/Applications/XAMPP/xamppfiles/htdocs/bms`):
 
-Additionally, make sure that the following extensions are enabled in your PHP:
+```bash
+# Run database migrations
+/Applications/XAMPP/xamppfiles/bin/php spark migrate
 
-- json (enabled by default - don't turn it off)
-- [mysqlnd](http://php.net/manual/en/mysqlnd.install.php) if you plan to use MySQL
-- [libcurl](http://php.net/manual/en/curl.requirements.php) if you plan to use the HTTP\CURLRequest library
+# Seed required roles, branches, users, and sample bank accounts
+/Applications/XAMPP/xamppfiles/bin/php spark db:seed RoleSeeder
+/Applications/XAMPP/xamppfiles/bin/php spark db:seed BranchSeeder
+/Applications/XAMPP/xamppfiles/bin/php spark db:seed UserSeeder
+/Applications/XAMPP/xamppfiles/bin/php spark db:seed CustomerSeeder
+/Applications/XAMPP/xamppfiles/bin/php spark db:seed AccountTypeSeeder
+/Applications/XAMPP/xamppfiles/bin/php spark db:seed AccountSeeder
+```
+
+### 3. Accessing the Application
+- **Login Portal:** [http://localhost/bms/public/login](http://localhost/bms/public/login)
+- **Dashboard:** [http://localhost/bms/public/dashboard](http://localhost/bms/public/dashboard)
+- **Customers Directory:** [http://localhost/bms/public/customers](http://localhost/bms/public/customers)
+- **Bank Accounts:** [http://localhost/bms/public/accounts](http://localhost/bms/public/accounts)
+- **Deposit Terminal:** [http://localhost/bms/public/deposits/create](http://localhost/bms/public/deposits/create)
+- **Withdrawal Terminal:** [http://localhost/bms/public/withdrawals/create](http://localhost/bms/public/withdrawals/create)
+
+---
+
+## 📡 REST API Endpoints (Customers, Accounts & Operations)
+
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/api/customers/search?q={term}` | Live autocomplete search for customer records |
+| `GET` | `/api/customers/{id}` | Retrieve customer profile and associated accounts |
+| `POST` | `/api/customers/kyc/{id}` | Update customer KYC verification status |
+| `GET` | `/api/accounts/lookup/{account_no}` | Real-time teller account balance and status lookup |
+| `GET` | `/api/accounts/by-customer/{customer_id}` | Fetch all accounts owned by a specific customer |
+| `POST` | `/api/accounts/open` | Open a new bank account programmatically |
+| `POST` | `/api/operations/deposit` | Post an atomic cash/cheque credit deposit |
+| `POST` | `/api/operations/withdraw` | Execute an audited cash withdrawal with overdraft protection |
