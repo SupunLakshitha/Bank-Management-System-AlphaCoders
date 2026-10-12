@@ -17,7 +17,7 @@ class AuthFilter implements FilterInterface
                     ->setJSON(['error' => 'Unauthorized'])
                     ->setStatusCode(ResponseInterface::HTTP_UNAUTHORIZED);
             }
-            return redirect()->to('/login');
+            return redirect()->to(base_url('login'));
         }
     }
 

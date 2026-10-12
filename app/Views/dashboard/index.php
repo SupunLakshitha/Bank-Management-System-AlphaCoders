@@ -98,7 +98,63 @@
             <div class="role-badge">Role: <?= esc($role) ?></div>
         </div>
 
+        <?php if (in_array($role, ['SUPER ADMIN', 'Branch Manager', 'Account Officer', 'Teller'])): ?>
+            <!-- Customer Management & Bank Accounts -->
+            <h3 style="margin-top:28px;color:#1e1e2f;">Customers &amp; Accounts</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin-top: 14px;">
+                <div style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-left: 4px solid #4361ee; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <h3 style="font-size: 17px; margin-bottom: 8px; color: #1e1e2f;">Customer Management &amp; KYC</h3>
+                        <p style="color: #666; font-size: 13px; margin-bottom: 16px;">View customer directory, manage KYC verifications, profile demographics, and associated facilities.</p>
+                    </div>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <a href="<?= base_url('customers') ?>" style="display: inline-block; padding: 8px 14px; background: #4361ee; color: white; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: 600;">Customers Directory &rarr;</a>
+                        <a href="<?= base_url('customers/create') ?>" style="display: inline-block; padding: 8px 14px; background: #e0e7ff; color: #4338ca; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: 600;">+ Onboard</a>
+                    </div>
+                </div>
+
+                <div style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-left: 4px solid #0ea5e9; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <h3 style="font-size: 17px; margin-bottom: 8px; color: #1e1e2f;">Bank Accounts</h3>
+                        <p style="color: #666; font-size: 13px; margin-bottom: 16px;">Open savings, current &amp; business accounts, inspect available balances, and view transaction statements.</p>
+                    </div>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <a href="<?= base_url('accounts') ?>" style="display: inline-block; padding: 8px 14px; background: #0ea5e9; color: white; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: 600;">View Accounts &rarr;</a>
+                        <a href="<?= base_url('accounts/open') ?>" style="display: inline-block; padding: 8px 14px; background: #e0f2fe; color: #0369a1; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: 600;">+ Open Account</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Deposits & Withdrawals -->
+            <h3 style="margin-top:28px;color:#1e1e2f;">Deposits &amp; Withdrawals (Teller Operations)</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin-top: 14px;">
+                <div style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-left: 4px solid #10b981; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <h3 style="font-size: 17px; margin-bottom: 8px; color: #1e1e2f;">Deposit Operations</h3>
+                        <p style="color: #666; font-size: 13px; margin-bottom: 16px;">Process cash, cheque and online deposits with real-time balance credit and printable receipts.</p>
+                    </div>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <a href="<?= base_url('deposits/create') ?>" style="display: inline-block; padding: 8px 14px; background: #10b981; color: white; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: 600;">Deposit Terminal &rarr;</a>
+                        <a href="<?= base_url('deposits') ?>" style="display: inline-block; padding: 8px 14px; background: #ecfdf5; color: #065f46; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: 600;">Deposits Log</a>
+                    </div>
+                </div>
+
+                <div style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-left: 4px solid #ef4444; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <h3 style="font-size: 17px; margin-bottom: 8px; color: #1e1e2f;">Withdrawal Operations</h3>
+                        <p style="color: #666; font-size: 13px; margin-bottom: 16px;">Debit accounts with strict available balance and minimum balance enforcement, and issue vouchers.</p>
+                    </div>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <a href="<?= base_url('withdrawals/create') ?>" style="display: inline-block; padding: 8px 14px; background: #ef4444; color: white; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: 600;">Withdrawal Terminal &rarr;</a>
+                        <a href="<?= base_url('withdrawals') ?>" style="display: inline-block; padding: 8px 14px; background: #fef2f2; color: #991b1b; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: 600;">Withdrawals Log</a>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
+
         <?php if (in_array($role, ['SUPER ADMIN', 'Branch Manager', 'Loan Officer'])): ?>
+            <h3 style="margin-top:32px;color:#1e1e2f;">Loans Management</h3>
+
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 24px;">
                 <div style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-left: 4px solid #4361ee; display: flex; flex-direction: column; justify-content: space-between;">
                     <div>
