@@ -18,7 +18,16 @@ class RoleSeeder extends Seeder
             ['name' => 'Customer', 'description' => 'Standard user account for bank customers'],
         ];
 
-        // Simple Query Builder
-        $this->db->table('roles')->insertBatch($data);
+        foreach ($data as $role) {
+            $existing = $this->db->table('roles')->where('name', $role['name'])->get()->getRowArray();
+            if ($existing) {
+                $this->db->table('roles')->where('id', $existing['id'])->update([
+                    'description' => $role['description'],
+                ]);
+                continue;
+            }
+
+            $this->db->table('roles')->insert($role);
+        }
     }
 }

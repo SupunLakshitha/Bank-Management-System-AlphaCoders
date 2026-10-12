@@ -30,7 +30,7 @@ class LoanApplicationController extends BaseController
         $data = [
             'username'     => session()->get('username'),
             'role'         => session()->get('role'),
-            'applications' => $this->applicationModel->getApplicationsList($statusFilter),
+            'applications' => $this->applicationModel->getApplicationsList($statusFilter, $this->branchScope()),
             'statusFilter' => $statusFilter,
         ];
 
@@ -42,10 +42,18 @@ class LoanApplicationController extends BaseController
      */
     public function apply()
     {
+        $customers = $this->customerModel
+            ->select('customers.*, branches.name as branch_name')
+            ->join('branches', 'branches.id = customers.branch_id')
+            ->orderBy('customers.full_name', 'ASC');
+        if ($this->branchScope() !== null) {
+            $customers->where('customers.branch_id', $this->branchScope());
+        }
+
         $data = [
             'username'  => session()->get('username'),
             'role'      => session()->get('role'),
-            'customers' => $this->customerModel->orderBy('full_name', 'ASC')->findAll(),
+            'customers' => $customers->findAll(),
             'products'  => $this->productModel->getActiveProducts(),
         ];
 
@@ -109,8 +117,14 @@ class LoanApplicationController extends BaseController
             $incomeDocPath = 'uploads/loan_documents/' . $newName;
         }
 
-        $userId   = session()->get('user_id') ?? 1;
-        $branchId = session()->get('branch_id') ?? 1;
+        $userId   = session()->get('user_id');
+        $branchId = (int) ($customer['branch_id'] ?? 0);
+        if ($branchId <= 0) {
+            return redirect()->back()->withInput()->with('errors', ['customer_id' => 'This customer is not assigned to a branch.']);
+        }
+        if (! user_can_access_branch($branchId)) {
+            return redirect()->back()->withInput()->with('errors', ['customer_id' => 'You can only submit applications for customers of your branch.']);
+        }
 
         $data = [
             'application_no'         => LoanApplicationModel::generateApplicationNumber(),
@@ -152,7 +166,7 @@ class LoanApplicationController extends BaseController
     {
         $application = $this->applicationModel->getDetailedApplication($id);
 
-        if (!$application) {
+        if (!$application || ! user_can_access_branch((int) ($application['branch_id'] ?? 0))) {
             return redirect()->to('/loans/applications')->with('error', 'Loan application not found.');
         }
 
@@ -163,5 +177,14 @@ class LoanApplicationController extends BaseController
         ];
 
         return view('loan_applications/view', $data);
+    }
+
+    private function branchScope(): ?int
+    {
+        if (session()->get('role') === 'SUPER ADMIN') {
+            return null;
+        }
+
+        return (int) session()->get('branch_id');
     }
 }

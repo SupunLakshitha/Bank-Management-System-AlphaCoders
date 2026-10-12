@@ -37,6 +37,10 @@ class LoanApprovalApi extends BaseController
             return $this->failNotFound('Loan application not found.');
         }
 
+        if (! user_can_access_branch((int) ($application['branch_id'] ?? 0))) {
+            return $this->failForbidden('That application belongs to another branch.');
+        }
+
         if ($application['status'] !== 'Pending Review') {
             return $this->fail([
                 'status'  => 400,
@@ -115,6 +119,10 @@ class LoanApprovalApi extends BaseController
             return $this->failNotFound('Loan application not found.');
         }
 
+        if (! user_can_access_branch((int) ($application['branch_id'] ?? 0))) {
+            return $this->failForbidden('That application belongs to another branch.');
+        }
+
         if ($application['status'] !== 'Pending Review') {
             return $this->fail([
                 'status'  => 400,
@@ -146,7 +154,7 @@ class LoanApprovalApi extends BaseController
         return $this->respond([
             'status'  => 200,
             'message' => 'Active loans retrieved',
-            'data'    => $this->loanModel->getActiveLoans(),
+            'data'    => $this->loanModel->getActiveLoans(session()->get('role') === 'SUPER ADMIN' ? null : (int) session()->get('branch_id')),
         ]);
     }
 }
