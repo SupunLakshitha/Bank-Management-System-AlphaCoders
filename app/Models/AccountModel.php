@@ -17,6 +17,15 @@ class AccountModel extends Model
         'branch_id',
         'balance',
         'interest_rate',
+    protected $protectFields    = true;
+    protected $allowedFields    = [
+        'account_no',
+        'customer_id',
+        'branch_id',
+        'gl_account_id',
+        'account_type',
+        'currency',
+        'balance',
         'status',
     ];
 
@@ -102,5 +111,38 @@ class AccountModel extends Model
         }
 
         return $builder->orderBy('accounts.id', 'DESC')->findAll();
+    public function findSavingsForCustomer(int $customerId): ?array
+    {
+        return $this->where('customer_id', $customerId)
+            ->where('account_type', 'SAVINGS')
+            ->first();
+    }
+
+    public function ensureSavingsAccount(int $customerId, int $branchId, ?string $accountNo = null): array
+    {
+        $existing = $this->findSavingsForCustomer($customerId);
+        if ($existing) {
+            if ((int) $existing['branch_id'] !== $branchId) {
+                $this->update($existing['id'], ['branch_id' => $branchId]);
+                $existing['branch_id'] = $branchId;
+            }
+
+            return $existing;
+        }
+
+        $gl = $this->db->table('gl_accounts')->where('code', 'GL-20100')->get()->getRowArray();
+
+        $this->insert([
+            'account_no'    => $accountNo ?: ('SA-' . str_pad((string) $customerId, 6, '0', STR_PAD_LEFT)),
+            'customer_id'   => $customerId,
+            'branch_id'     => $branchId,
+            'gl_account_id' => $gl['id'] ?? null,
+            'account_type'  => 'SAVINGS',
+            'currency'      => 'LKR',
+            'balance'       => 0,
+            'status'        => 'Active',
+        ]);
+
+        return $this->find($this->getInsertID());
     }
 }

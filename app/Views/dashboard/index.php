@@ -96,6 +96,9 @@
             <h1>Welcome, <?= esc($username) ?>!</h1>
             <p>You have successfully logged into the Bank Management System.</p>
             <div class="role-badge">Role: <?= esc($role) ?></div>
+            <?php if (!empty($branch_name)): ?>
+                <div class="role-badge">Branch: <?= esc($branch_name) ?></div>
+            <?php endif; ?>
         </div>
 
         <?php if (in_array($role, ['SUPER ADMIN', 'Branch Manager', 'Account Officer', 'Teller'])): ?>
@@ -149,6 +152,32 @@
                         <a href="<?= base_url('withdrawals') ?>" style="display: inline-block; padding: 8px 14px; background: #fef2f2; color: #991b1b; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: 600;">Withdrawals Log</a>
                     </div>
                 </div>
+        <?php
+            $canPostLedger = in_array($role, ['SUPER ADMIN', 'Branch Manager', 'Account Officer', 'Teller'], true);
+            $canViewLedger = $canPostLedger || $role === 'Auditor';
+        ?>
+        <?php if ($canViewLedger): ?>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 24px;">
+                <div style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-left: 4px solid #0f172a;">
+                    <h3 style="font-size: 17px; margin-bottom: 8px; color: #1e1e2f;">Transaction ledger</h3>
+                    <p style="color: #666; font-size: 13px; margin-bottom: 16px;">Deposits, withdrawals, loan movements, interest, fees, and adjustments are posted as balanced ledger entries.</p>
+                    <a href="<?= base_url('ledger') ?>" style="display: inline-block; padding: 8px 16px; background: #0f172a; color: white; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: 600;">Open ledger &rarr;</a>
+                </div>
+                <?php if ($canPostLedger): ?>
+                    <div style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-left: 4px solid #4361ee;">
+                        <h3 style="font-size: 17px; margin-bottom: 8px; color: #1e1e2f;">Money transfers</h3>
+                        <p style="color: #666; font-size: 13px; margin-bottom: 16px;">A transfer debits one account and credits the other in the same ledger posting.</p>
+                        <a href="<?= base_url('transfers') ?>" style="display: inline-block; padding: 8px 16px; background: #4361ee; color: white; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: 600;">New transfer &rarr;</a>
+                    </div>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
+
+        <?php if ($role !== 'Customer'): ?>
+            <div style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-left: 4px solid #4facfe; margin-bottom: 20px;">
+                <h3 style="font-size: 17px; margin-bottom: 8px; color: #1e1e2f;">Branch Management</h3>
+                <p style="color: #666; font-size: 13px; margin-bottom: 16px;">Customers, accounts, employees, transactions, and loans are kept with their branch.</p>
+                <a href="<?= base_url('branches') ?>" style="display: inline-block; padding: 8px 16px; background: #4facfe; color: white; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: 600;">Open branches &rarr;</a>
             </div>
         <?php endif; ?>
 

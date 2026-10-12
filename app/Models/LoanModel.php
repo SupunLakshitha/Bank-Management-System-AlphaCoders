@@ -38,9 +38,9 @@ class LoanModel extends Model
     /**
      * Get active loans with joined customer and product details
      */
-    public function getActiveLoans()
+    public function getActiveLoans(?int $branchId = null)
     {
-        return $this->select('loans.*, 
+        $this->select('loans.*, 
                               customers.full_name as customer_name, 
                               customers.customer_id as customer_code, 
                               customers.nic as customer_nic,
@@ -53,8 +53,13 @@ class LoanModel extends Model
                     ->join('loan_products', 'loan_products.id = loans.loan_product_id', 'left')
                     ->join('branches', 'branches.id = loans.branch_id', 'left')
                     ->join('users', 'users.id = loans.approved_by_user_id', 'left')
-                    ->orderBy('loans.id', 'DESC')
-                    ->findAll();
+                    ->orderBy('loans.id', 'DESC');
+
+        if ($branchId !== null) {
+            $this->where('loans.branch_id', $branchId);
+        }
+
+        return $this->findAll();
     }
 
     /**

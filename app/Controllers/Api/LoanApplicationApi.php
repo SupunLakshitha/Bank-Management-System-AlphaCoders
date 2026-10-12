@@ -29,7 +29,8 @@ class LoanApplicationApi extends BaseController
     public function index()
     {
         $status = $this->request->getGet('status');
-        $list   = $this->applicationModel->getApplicationsList($status);
+        $branchId = session()->get('role') === 'SUPER ADMIN' ? null : (int) session()->get('branch_id');
+        $list   = $this->applicationModel->getApplicationsList($status, $branchId);
 
         return $this->respond([
             'status'  => 200,
@@ -44,7 +45,7 @@ class LoanApplicationApi extends BaseController
     public function show($id = null)
     {
         $app = $this->applicationModel->getDetailedApplication($id);
-        if (! $app) {
+        if (! $app || ! user_can_access_branch((int) ($app['branch_id'] ?? 0))) {
             return $this->failNotFound('Loan application not found.');
         }
 
@@ -112,8 +113,11 @@ class LoanApplicationApi extends BaseController
             $incomeDocPath = 'uploads/loan_documents/' . $newName;
         }
 
-        $userId = session()->get('user_id') ?? 1;
-        $branchId = session()->get('branch_id') ?? 1;
+        $userId = session()->get('user_id');
+        $branchId = (int) ($customer['branch_id'] ?? 0);
+        if ($branchId <= 0 || ! user_can_access_branch($branchId)) {
+            return $this->fail('The customer must belong to your branch.', 422);
+        }
 
         $insertData = [
             'application_no'         => LoanApplicationModel::generateApplicationNumber(),

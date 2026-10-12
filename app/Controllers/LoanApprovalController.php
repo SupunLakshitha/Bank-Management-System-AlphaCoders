@@ -37,6 +37,10 @@ class LoanApprovalController extends BaseController
             return redirect()->to('/loans/applications')->with('error', 'Application not found.');
         }
 
+        if (! user_can_access_branch((int) ($application['branch_id'] ?? 0))) {
+            return redirect()->to('/loans/applications')->with('error', 'That application belongs to another branch.');
+        }
+
         if ($application['status'] !== 'Pending Review') {
             return redirect()->back()->with('error', "Application is already in status '{$application['status']}'.");
         }
@@ -109,6 +113,10 @@ class LoanApprovalController extends BaseController
             return redirect()->to('/loans/applications')->with('error', 'Application not found.');
         }
 
+        if (! user_can_access_branch((int) ($application['branch_id'] ?? 0))) {
+            return redirect()->to('/loans/applications')->with('error', 'That application belongs to another branch.');
+        }
+
         if ($application['status'] !== 'Pending Review') {
             return redirect()->back()->with('error', "Application is already in status '{$application['status']}'.");
         }
@@ -136,7 +144,7 @@ class LoanApprovalController extends BaseController
         $data = [
             'username'    => session()->get('username'),
             'role'        => session()->get('role'),
-            'activeLoans' => $this->loanModel->getActiveLoans(),
+            'activeLoans' => $this->loanModel->getActiveLoans(session()->get('role') === 'SUPER ADMIN' ? null : (int) session()->get('branch_id')),
         ];
 
         return view('loans/index', $data);
@@ -148,7 +156,7 @@ class LoanApprovalController extends BaseController
     public function schedule($loanId = null)
     {
         $loan = $this->loanModel->getDetailedLoan((int)$loanId);
-        if (!$loan) {
+        if (!$loan || ! user_can_access_branch((int) ($loan['branch_id'] ?? 0))) {
             return redirect()->to('/loans/active')->with('error', 'Loan account not found.');
         }
 

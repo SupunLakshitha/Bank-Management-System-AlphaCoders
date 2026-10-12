@@ -77,7 +77,7 @@ class LoanApplicationModel extends Model
     /**
      * Get all applications with joined details
      */
-    public function getApplicationsList($status = null)
+    public function getApplicationsList($status = null, ?int $branchId = null)
     {
         $builder = $this->select('loan_applications.*, 
                                   customers.full_name as customer_name, 
@@ -95,6 +95,10 @@ class LoanApplicationModel extends Model
 
         if (!empty($status)) {
             $builder->where('loan_applications.status', $status);
+        }
+
+        if ($branchId !== null) {
+            $builder->where('loan_applications.branch_id', $branchId);
         }
 
         return $builder->findAll();
