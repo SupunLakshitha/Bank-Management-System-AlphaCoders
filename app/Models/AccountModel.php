@@ -17,17 +17,14 @@ class AccountModel extends Model
         'branch_id',
         'balance',
         'interest_rate',
-    protected $protectFields    = true;
-    protected $allowedFields    = [
-        'account_no',
-        'customer_id',
         'branch_id',
         'gl_account_id',
         'account_type',
         'currency',
-        'balance',
         'status',
     ];
+
+    protected $protectFields    = true;
 
     protected $useTimestamps = true;
     protected $dateFormat    = 'datetime';
@@ -111,6 +108,8 @@ class AccountModel extends Model
         }
 
         return $builder->orderBy('accounts.id', 'DESC')->findAll();
+    }
+
     public function findSavingsForCustomer(int $customerId): ?array
     {
         return $this->where('customer_id', $customerId)

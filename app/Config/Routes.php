@@ -15,6 +15,23 @@ $routes->get('/logout', 'AuthController::logout');
 // Protected Web Routes
 $routes->get('/dashboard', 'Dashboard::index', ['filter' => 'auth']);
 
+$routes->group('audit', ['filter' => ['auth', 'role:SUPER ADMIN,Auditor']], static function ($routes) {
+    $routes->get('/', 'AuditController::index');
+});
+
+$routes->group('reconciliation', ['filter' => ['auth', 'role:SUPER ADMIN,Auditor']], static function ($routes) {
+    $routes->get('/', 'ReconciliationController::index');
+});
+
+$routes->group('reports', ['filter' => 'auth'], static function ($routes) {
+    $routes->get('/', 'ReportController::index');
+    $routes->get('transactions', 'ReportController::dailyTransactions');
+    $routes->get('deposits', 'ReportController::deposits');
+    $routes->get('withdrawals', 'ReportController::withdrawals');
+    $routes->get('loans', 'ReportController::loans');
+    $routes->get('teller', 'ReportController::tellerSummary');
+});
+
 $routes->group('branches', ['filter' => 'auth'], static function ($routes) {
     $routes->get('/', 'BranchController::index');
     $routes->post('/', 'BranchController::create');

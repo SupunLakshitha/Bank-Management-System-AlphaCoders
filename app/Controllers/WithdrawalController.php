@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Models\AccountModel;
 use App\Models\WithdrawalModel;
 use App\Services\DepositWithdrawalService;
+use App\Services\AuditService;
 
 class WithdrawalController extends BaseController
 {
@@ -81,6 +82,10 @@ class WithdrawalController extends BaseController
         if (!$res['ok']) {
             return redirect()->back()->withInput()->with('error', $res['error']);
         }
+
+        AuditService::log('Withdrawals', 'WITHDRAWAL', $res['withdrawal_id'] ?? (string) $res['id'], json_encode([
+            'account_no' => $res['account_no'], 'amount' => $res['amount'], 'method' => $method,
+        ]));
 
         return redirect()->to(base_url('withdrawals/receipt/' . $res['id']))
             ->with('success', "Withdrawal of Rs. " . number_format($amount, 2) . " processed successfully!");
