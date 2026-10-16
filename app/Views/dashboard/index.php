@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BMS - Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
         
@@ -83,6 +84,7 @@
     <div class="navbar">
         <h2>BMS Dashboard</h2>
         <div>
+            <a href="<?= base_url('reports') ?>" class="btn-logout" style="margin-right:10px;border-color:#4facfe;color:#4facfe;">Reports</a>
             <a href="<?= base_url('logout') ?>" class="btn-logout">Logout</a>
         </div>
     </div>
@@ -100,6 +102,38 @@
                 <div class="role-badge">Branch: <?= esc($branch_name) ?></div>
             <?php endif; ?>
         </div>
+
+        <section class="row g-3 mb-4" aria-label="Banking metrics">
+            <div class="col-12 col-md-6 col-xl-3">
+                <div class="card h-100 border-0 shadow-sm"><div class="card-body">
+                    <h2 class="h6 text-secondary">Customers &amp; Active Accounts</h2>
+                    <div class="fs-4 fw-semibold"><?= number_format($metrics['total_customers'] ?? 0) ?></div>
+                    <div class="small text-secondary">Active accounts: <?= number_format($metrics['active_accounts'] ?? 0) ?></div>
+                </div></div>
+            </div>
+            <div class="col-12 col-md-6 col-xl-3">
+                <div class="card h-100 border-0 shadow-sm"><div class="card-body">
+                    <h2 class="h6 text-secondary">Total Deposited Funds</h2>
+                    <div class="fs-4 fw-semibold">Rs. <?= number_format($metrics['total_deposit_balance'] ?? 0, 2) ?></div>
+                    <div class="small text-secondary">Across all accounts</div>
+                </div></div>
+            </div>
+            <div class="col-12 col-md-6 col-xl-3">
+                <div class="card h-100 border-0 shadow-sm"><div class="card-body">
+                    <h2 class="h6 text-secondary">Today's Deposits &amp; Withdrawals</h2>
+                    <div class="small">Deposits: <strong>Rs. <?= number_format($metrics['today_deposits'] ?? 0, 2) ?></strong></div>
+                    <div class="small">Withdrawals: <strong>Rs. <?= number_format($metrics['today_withdrawals'] ?? 0, 2) ?></strong></div>
+                </div></div>
+            </div>
+            <div class="col-12 col-md-6 col-xl-3">
+                <div class="card h-100 border-0 shadow-sm"><div class="card-body">
+                    <h2 class="h6 text-secondary">Active Loans &amp; Exposure</h2>
+                    <div class="fs-4 fw-semibold"><?= number_format($metrics['active_loans'] ?? 0) ?> active</div>
+                    <div class="small">Outstanding: <strong>Rs. <?= number_format($metrics['outstanding_exposure'] ?? 0, 2) ?></strong></div>
+                    <div class="small text-secondary">Overdue schedules: <?= number_format($metrics['overdue_loans_count'] ?? 0) ?></div>
+                </div></div>
+            </div>
+        </section>
 
         <?php if (in_array($role, ['SUPER ADMIN', 'Branch Manager', 'Account Officer', 'Teller'])): ?>
             <!-- Customer Management & Bank Accounts -->
@@ -152,6 +186,7 @@
                         <a href="<?= base_url('withdrawals') ?>" style="display: inline-block; padding: 8px 14px; background: #fef2f2; color: #991b1b; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: 600;">Withdrawals Log</a>
                     </div>
                 </div>
+            </div>
         <?php
             $canPostLedger = in_array($role, ['SUPER ADMIN', 'Branch Manager', 'Account Officer', 'Teller'], true);
             $canViewLedger = $canPostLedger || $role === 'Auditor';
@@ -252,6 +287,42 @@
             </div>
         <?php endif; ?>          
 
+        <h3 style="margin-top:32px;color:#1e1e2f;">Reports &amp; Business Intelligence</h3>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;margin-top:16px;">
+            <div style="background:white;padding:24px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.05);border-left:4px solid #4361ee;display:flex;flex-direction:column;justify-content:space-between;">
+                <div>
+                    <h3 style="font-size:17px;margin-bottom:8px;color:#1e1e2f;">Bank Reports &amp; Statements</h3>
+                    <p style="color:#666;font-size:13px;margin-bottom:16px;">Generate daily transaction ledgers, deposit/withdrawal summaries, loan overdue reports, and cashier/teller performance logs.</p>
+                </div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <a href="<?= base_url('reports') ?>" style="display:inline-block;padding:8px 14px;background:#4361ee;color:white;text-decoration:none;border-radius:6px;font-size:13px;font-weight:600;">View Reports Hub &rarr;</a>
+                    <a href="<?= base_url('reports/transactions') ?>" style="display:inline-block;padding:8px 14px;background:#e0e7ff;color:#4338ca;text-decoration:none;border-radius:6px;font-size:13px;font-weight:600;">Daily Transactions</a>
+                    <a href="<?= base_url('reports/loans') ?>" style="display:inline-block;padding:8px 14px;background:#e0e7ff;color:#4338ca;text-decoration:none;border-radius:6px;font-size:13px;font-weight:600;">Loans Report</a>
+                </div>
+            </div>
+        </div>
+
+        <?php endif; ?>
+
+        <?php if (in_array($role, ['SUPER ADMIN', 'Auditor'], true)): ?>
+            <h3 style="margin-top:32px;color:#1e1e2f;">Security &amp; Audit</h3>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;margin-top:16px;">
+                <div style="background:white;padding:24px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.05);border-left:4px solid #7209b7;display:flex;flex-direction:column;justify-content:space-between;">
+                    <div>
+                        <h3 style="font-size:17px;margin-bottom:8px;color:#1e1e2f;">Security &amp; Audit Trail</h3>
+                        <p style="color:#666;font-size:13px;margin-bottom:16px;">Review login activity and trace deposits, withdrawals, and other recorded banking actions.</p>
+                    </div>
+                    <a href="<?= base_url('audit') ?>" style="display:inline-block;padding:8px 14px;background:#7209b7;color:white;text-decoration:none;border-radius:6px;font-size:13px;font-weight:600;width:fit-content;">Open Audit Trail &rarr;</a>
+                </div>
+                <div style="background:white;padding:24px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.05);border-left:4px solid #0ea5e9;display:flex;flex-direction:column;justify-content:space-between;">
+                    <div>
+                        <h3 style="font-size:17px;margin-bottom:8px;color:#1e1e2f;">Financial Reconciliation</h3>
+                        <p style="color:#666;font-size:13px;margin-bottom:16px;">Compare account balances with recorded transactions and check general ledger debit and credit integrity.</p>
+                    </div>
+                    <a href="<?= base_url('reconciliation') ?>" style="display:inline-block;padding:8px 14px;background:#0ea5e9;color:white;text-decoration:none;border-radius:6px;font-size:13px;font-weight:600;width:fit-content;">Open Reconciliation Hub &rarr;</a>
+                </div>
+            </div>
+        <?php endif; ?>
 
     </div>
 

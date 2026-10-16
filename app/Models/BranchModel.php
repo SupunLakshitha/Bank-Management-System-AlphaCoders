@@ -21,7 +21,6 @@ class BranchModel extends Model
         'code' => 'required|min_length[2]|max_length[10]|is_unique[branches.code,id,{id}]',
     ];
     protected $protectFields    = true;
-    protected $allowedFields    = ['name', 'code', 'location'];
 
     public function withCounts(?int $onlyBranchId = null): array
     {

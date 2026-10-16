@@ -9,6 +9,7 @@ use App\Models\RoleModel;
 use App\Models\BranchModel;
 use App\Models\CustomerModel;
 use App\Models\AccountModel;
+use App\Services\AuditService;
 
 class AuthController extends BaseController
 {
@@ -38,6 +39,8 @@ class AuthController extends BaseController
                 'branch_name' => $branch['name'] ?? null,
                 'isLoggedIn'  => true,
             ]);
+
+            AuditService::log('Auth', 'LOGIN', (string) $user['id'], 'Successful login');
 
             return redirect()->to('/dashboard');
         }
@@ -101,6 +104,7 @@ class AuthController extends BaseController
 
     public function logout()
     {
+        AuditService::log('Auth', 'LOGOUT', (string) session()->get('user_id'), 'User logged out');
         session()->destroy();
         return redirect()->to('/login');
     }
