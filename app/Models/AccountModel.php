@@ -36,7 +36,7 @@ class AccountModel extends Model
         'customer_id'     => 'required|is_not_unique[customers.id]',
         'account_type_id' => 'required|is_not_unique[account_types.id]',
         'balance'         => 'permit_empty|decimal',
-        'status'          => 'in_list[active,inactive,suspended,closed]',
+        'status'          => 'in_list[Active,Frozen,Closed]',
     ];
 
     public function generateAccountNumber(): string

@@ -10,7 +10,8 @@ class EnforceBranchAssociations extends Migration
     {
         $colomboId = $this->ensureBranches();
 
-        if (! $this->db->fieldExists('branch_id', 'customers')) {
+        $hasBranch = $this->db->query("SHOW COLUMNS FROM `customers` LIKE 'branch_id'")->getNumRows() > 0;
+        if (! $hasBranch) {
             $this->forge->addColumn('customers', [
                 'branch_id' => [
                     'type'       => 'INT',
@@ -46,7 +47,10 @@ class EnforceBranchAssociations extends Migration
         $this->requireBranchColumn('loans');
         $this->requireBranchColumn('loan_applications');
 
-        if ($this->db->tableExists('fixed_deposits') && ! $this->db->fieldExists('branch_id', 'fixed_deposits')) {
+        $fdHasBranch = $this->db->tableExists('fixed_deposits')
+            && $this->db->query("SHOW COLUMNS FROM `fixed_deposits` LIKE 'branch_id'")->getNumRows() > 0;
+
+        if ($this->db->tableExists('fixed_deposits') && ! $fdHasBranch) {
             $this->forge->addColumn('fixed_deposits', [
                 'branch_id' => [
                     'type'       => 'INT',

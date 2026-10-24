@@ -18,7 +18,7 @@ class AccrueFdInterest extends BaseCommand
         $calc  = new FdInterestCalculator();
         $today = date('Y-m-d');
 
-        $fds = $db->table('fixed_deposits')->where('status', 'active')->get()->getResultArray();
+        $fds = $db->table('fixed_deposits')->where('status', 'Active')->get()->getResultArray();
 
         foreach ($fds as $fd) {
             $exists = $db->table('interest_logs')

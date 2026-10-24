@@ -77,7 +77,7 @@ class FdPageController extends BaseController
         $data = $this->base('Open Fixed Deposit') + [
             'accountsReady' => $accountsReady,
             'customers'     => $db->table('customers')->get()->getResultArray(),
-            'accounts'      => $accountsReady ? $db->table('accounts')->where('status', 'active')->get()->getResultArray() : [],
+            'accounts'      => $accountsReady ? $db->table('accounts')->where('status', 'Active')->get()->getResultArray() : [],
             'products'      => (new FdProductModel())->where('is_active', 1)->findAll(),
         ];
 

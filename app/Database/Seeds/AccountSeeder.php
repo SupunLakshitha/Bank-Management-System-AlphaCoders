@@ -29,7 +29,7 @@ class AccountSeeder extends Seeder
                 'branch_id'       => $branchId,
                 'balance'         => 150000.00,
                 'interest_rate'   => 5.00,
-                'status'          => 'active',
+                'status'          => 'Active',
                 'created_at'      => date('Y-m-d H:i:s'),
                 'updated_at'      => date('Y-m-d H:i:s'),
             ];
@@ -43,7 +43,7 @@ class AccountSeeder extends Seeder
                 'branch_id'       => $branchId,
                 'balance'         => 85000.00,
                 'interest_rate'   => 5.00,
-                'status'          => 'active',
+                'status'          => 'Active',
                 'created_at'      => date('Y-m-d H:i:s'),
                 'updated_at'      => date('Y-m-d H:i:s'),
             ];
@@ -57,7 +57,7 @@ class AccountSeeder extends Seeder
                 'branch_id'       => $branchId,
                 'balance'         => 240000.00,
                 'interest_rate'   => 0.00,
-                'status'          => 'active',
+                'status'          => 'Active',
                 'created_at'      => date('Y-m-d H:i:s'),
                 'updated_at'      => date('Y-m-d H:i:s'),
             ];

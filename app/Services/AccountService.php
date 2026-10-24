@@ -68,7 +68,7 @@ class AccountService
             'branch_id'       => $branchId,
             'balance'         => $initialDeposit,
             'interest_rate'   => $interestRate,
-            'status'          => 'active',
+            'status'          => 'Active',
         ];
 
         if (!$this->accountModel->insert($accountData)) {
@@ -96,12 +96,17 @@ class AccountService
             // Sync with transactions table if exists
             if ($this->db->tableExists('transactions')) {
                 $this->db->table('transactions')->insert([
-                    'tx_id'       => 'TX-' . date('YmdHis') . '-' . rand(100, 999),
-                    'account_no'  => $accountNo,
-                    'type'        => 'DEPOSIT',
-                    'amount'      => $initialDeposit,
-                    'description' => 'Initial deposit upon account opening',
-                    'created_at'  => date('Y-m-d H:i:s'),
+                    'tx_id'        => 'TX' . date('ymdHis') . rand(1000, 9999),
+                    'account_id'   => $accountId,
+                    'type'         => 'DEPOSIT',
+                    'amount'       => $initialDeposit,
+                    'tx_date'      => date('Y-m-d'),
+                    'description'  => 'Initial deposit upon account opening',
+                    'reference_no' => 'INITIAL-DEP-' . $accountNo,
+                    'branch_id'    => $branchId,
+                    'created_by'   => $tellerId,
+                    'status'       => 'POSTED',
+                    'created_at'   => date('Y-m-d H:i:s'),
                 ]);
             }
         }
@@ -122,9 +127,22 @@ class AccountService
 
     public function updateStatus(int $accountId, string $status): array
     {
-        if (!in_array($status, ['active', 'inactive', 'suspended', 'closed'])) {
+        $map = [
+            'active'    => 'Active',
+            'inactive'  => 'Frozen',
+            'suspended' => 'Frozen',
+            'frozen'    => 'Frozen',
+            'closed'    => 'Closed',
+        ];
+        $key = strtolower($status);
+        if (! isset($map[$key])) {
             return ['ok' => false, 'error' => 'Invalid account status.'];
         }
+        $status = $map[$key];
+
+
+
+        
 
         $account = $this->accountModel->find($accountId);
         if (!$account) {

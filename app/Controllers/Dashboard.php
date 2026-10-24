@@ -27,7 +27,7 @@ class Dashboard extends BaseController
         }
 
         if ($db->tableExists('accounts')) {
-            $metrics['active_accounts'] = (int) $db->table('accounts')->where('status', 'active')->countAllResults();
+            $metrics['active_accounts'] = (int) $db->table('accounts')->where('status', 'Active')->countAllResults();
             $metrics['total_deposit_balance'] = (float) ($db->table('accounts')->selectSum('balance')->get()->getRow()->balance ?? 0);
         }
 

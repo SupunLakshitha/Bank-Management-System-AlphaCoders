@@ -52,7 +52,7 @@ class DepositWithdrawalService
             return ['ok' => false, 'error' => 'Bank account not found.'];
         }
 
-        if ($account['status'] !== 'active') {
+        if (strtolower($account['status']) !== 'active') {
             $this->db->transRollback();
             return ['ok' => false, 'error' => "Account is {$account['status']}. Transactions are not permitted."];
         }
@@ -87,12 +87,17 @@ class DepositWithdrawalService
         // 4. Optional sync with central transactions ledger if table exists
         if ($this->db->tableExists('transactions')) {
             $this->db->table('transactions')->insert([
-                'tx_id'       => 'TX-DEP-' . date('YmdHis') . '-' . rand(100, 999),
-                'account_no'  => $account['account_no'],
-                'type'        => 'DEPOSIT',
-                'amount'      => $amount,
-                'description' => $remarks ?: "Deposit via {$method}",
-                'created_at'  => $timestamp,
+                'tx_id'        => 'TX' . date('ymdHis') . rand(1000, 9999),
+                'account_id'   => $account['id'],
+                'type'         => 'DEPOSIT',
+                'amount'       => $amount,
+                'tx_date'      => date('Y-m-d'),
+                'description'  => $remarks ?: "Deposit via {$method}",
+                'reference_no' => $referenceNo,
+                'branch_id'    => $account['branch_id'],
+                'created_by'   => $tellerId,
+                'status'       => 'POSTED',
+                'created_at'   => $timestamp,
             ]);
         }
 
@@ -145,7 +150,7 @@ class DepositWithdrawalService
             return ['ok' => false, 'error' => 'Bank account not found.'];
         }
 
-        if ($account['status'] !== 'active') {
+        if (strtolower($account['status']) !== 'active') {
             $this->db->transRollback();
             return ['ok' => false, 'error' => "Account is {$account['status']}. Withdrawals are not permitted."];
         }
@@ -200,12 +205,17 @@ class DepositWithdrawalService
         // 4. Optional sync with central transactions ledger if table exists
         if ($this->db->tableExists('transactions')) {
             $this->db->table('transactions')->insert([
-                'tx_id'       => 'TX-WTH-' . date('YmdHis') . '-' . rand(100, 999),
-                'account_no'  => $account['account_no'],
-                'type'        => 'WITHDRAWAL',
-                'amount'      => $amount,
-                'description' => $remarks ?: "Withdrawal via {$method}",
-                'created_at'  => $timestamp,
+                'tx_id'        => 'TX' . date('ymdHis') . rand(1000, 9999),
+                'account_id'   => $account['id'],
+                'type'         => 'WITHDRAWAL',
+                'amount'       => $amount,
+                'tx_date'      => date('Y-m-d'),
+                'description'  => $remarks ?: "Withdrawal via {$method}",
+                'reference_no' => $referenceNo,
+                'branch_id'    => $account['branch_id'],
+                'created_by'   => $tellerId,
+                'status'       => 'POSTED',
+                'created_at'   => $timestamp,
             ]);
         }
 

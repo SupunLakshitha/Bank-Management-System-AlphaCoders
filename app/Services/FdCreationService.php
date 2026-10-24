@@ -48,7 +48,7 @@ class FdCreationService
             $this->db->transComplete();
             return $this->fail(404, 'Source account not found for this customer.');
         }
-        if (($account['status'] ?? 'active') !== 'active') {
+        if (strtolower($account['status'] ?? 'active') !== 'active') {
             $this->db->transComplete();
             return $this->fail(422, 'Source account is not active.');
         }
@@ -71,9 +71,11 @@ class FdCreationService
 
         $now = date('Y-m-d H:i:s');
 
+        
         $this->db->table('fixed_deposits')->insert([
             'fd_number'            => 'TMP',
             'customer_id'          => $customerId,
+            'branch_id'            => $account['branch_id'],
             'fd_product_id'        => $productId,
             'account_id'           => $accountId,
             'principal'            => $amount,

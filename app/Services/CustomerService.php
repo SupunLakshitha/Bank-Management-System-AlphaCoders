@@ -147,7 +147,7 @@ class CustomerService
         $accounts = $this->accountModel->getAccountsByCustomer($id);
         $totalBalance = 0.0;
         foreach ($accounts as $acc) {
-            if ($acc['status'] === 'active') {
+            if (strtolower($acc['status']) === 'active') {
                 $totalBalance += (float)$acc['balance'];
             }
         }

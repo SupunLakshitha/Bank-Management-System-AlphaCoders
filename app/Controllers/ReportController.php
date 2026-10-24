@@ -92,7 +92,7 @@ class ReportController extends BaseController
         $rows = [];
         if ($this->db->tableExists('loans')) {
             $builder = $this->db->table('loans l')->select('l.*');
-            if ($this->db->tableExists('customers')) $builder->select('c.first_name, c.last_name')->join('customers c', 'c.id = l.customer_id', 'left');
+            if ($this->db->tableExists('customers')) $builder->select('c.full_name')->join('customers c', 'c.id = l.customer_id', 'left');
             if ($this->db->tableExists('branches')) $builder->select('b.name AS branch_name')->join('branches b', 'b.id = l.branch_id', 'left');
             if ($branchId > 0) $builder->where('l.branch_id', $branchId);
             if ($status === 'overdue') $builder->whereIn('l.status', ['Defaulted', 'Overdue']);

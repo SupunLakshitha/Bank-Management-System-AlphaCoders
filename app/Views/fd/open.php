@@ -33,7 +33,7 @@
                     <option value="">-- Choose Account --</option>
                     <?php foreach ($accounts as $a): ?>
                         <option value="<?= $a['id'] ?>" data-customer="<?= $a['customer_id'] ?>" data-balance="<?= $a['balance'] ?>">
-                            <?= esc($a['account_number']) ?> (Rs. <?= number_format($a['balance'], 2) ?>)
+                            <?= esc($a['account_no']) ?> (Rs. <?= number_format($a['balance'], 2) ?>)
                         </option>
                     <?php endforeach; ?>
                 </select>
