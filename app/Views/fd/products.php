@@ -84,7 +84,7 @@ $active = count(array_filter($products, fn($p) => $p['is_active']));
                         <div class="form-hint">Compound only (4 = quarterly)</div></div>
                 </div>
                 <div class="form-group"><label>Minimum Amount (LKR) *</label>
-                    <input type="number" step="1000" min="1" name="min_amount" id="min_amount" class="form-control" required></div>
+                    <input type="number" step="any" min="1" name="min_amount" id="min_amount" class="form-control" required></div>
                 <div class="form-group" style="display:flex;gap:8px;align-items:center;">
                     <input type="checkbox" name="is_active" id="is_active" value="1" checked>
                     <label for="is_active" style="margin:0;">Active (available for new FDs)</label>

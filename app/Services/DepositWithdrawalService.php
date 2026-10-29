@@ -41,9 +41,7 @@ class DepositWithdrawalService
         $this->db->transStart();
 
         // 1. Lock account row for update
-        $accountQuery = is_numeric($accountIdentifier)
-            ? $this->db->query('SELECT * FROM accounts WHERE id = ? OR account_no = ? FOR UPDATE', [(int)$accountIdentifier, (string)$accountIdentifier])
-            : $this->db->query('SELECT * FROM accounts WHERE account_no = ? FOR UPDATE', [(string)$accountIdentifier]);
+        $accountQuery = $this->db->query('SELECT * FROM accounts WHERE account_no = ? FOR UPDATE', [(string) $accountIdentifier]);
 
         $account = $accountQuery->getRowArray();
 
@@ -139,9 +137,7 @@ class DepositWithdrawalService
         $this->db->transStart();
 
         // 1. Lock account row for update
-        $accountQuery = is_numeric($accountIdentifier)
-            ? $this->db->query('SELECT a.*, at.min_balance FROM accounts a LEFT JOIN account_types at ON at.id = a.account_type_id WHERE a.id = ? OR a.account_no = ? FOR UPDATE', [(int)$accountIdentifier, (string)$accountIdentifier])
-            : $this->db->query('SELECT a.*, at.min_balance FROM accounts a LEFT JOIN account_types at ON at.id = a.account_type_id WHERE a.account_no = ? FOR UPDATE', [(string)$accountIdentifier]);
+        $accountQuery = $this->db->query('SELECT a.*, at.min_balance FROM accounts a LEFT JOIN account_types at ON at.id = a.account_type_id WHERE a.account_no = ? FOR UPDATE', [(string) $accountIdentifier]);
 
         $account = $accountQuery->getRowArray();
 

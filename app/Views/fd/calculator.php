@@ -12,7 +12,7 @@
         <?= csrf_field() ?>
         <div class="form-row">
             <div class="form-group"><label>Principal (LKR)</label>
-                <input type="number" step="1000" name="principal" class="form-control" value="<?= esc($input['principal'] ?? '100000') ?>" required></div>
+            <input type="number" step="any" min="1" name="principal" class="form-control" value="<?= esc($input['principal'] ?? '100000') ?>" required>
             <div class="form-group"><label>Rate (% p.a.)</label>
                 <input type="number" step="0.01" name="rate" class="form-control" value="<?= esc($input['rate'] ?? '8.5') ?>" required></div>
         </div>

@@ -107,6 +107,7 @@
         <?php endif; ?>
 
         <form action="<?= base_url('signup') ?>" method="post">
+            <?= csrf_field() ?>
             <div class="input-group">
                 <label for="username">Enter Username</label>
                 <input type="text" id="username" name="username" required autocomplete="off">
@@ -127,15 +128,7 @@
                 </select>
             </div>
 
-            <div class="input-group">
-                <label for="role_id">Choose Role</label>
-                <select id="role_id" name="role_id" required>
-                    <option value="">-- Select a Role --</option>
-                    <?php foreach($roles as $role): ?>
-                        <option value="<?= esc($role['id']) ?>"><?= esc($role['name']) ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
+
 
             <button type="submit" class="btn-submit">Register</button>
         </form>

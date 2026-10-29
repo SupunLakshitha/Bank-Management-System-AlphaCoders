@@ -56,7 +56,7 @@
             </div>
             <div class="form-group">
                 <label>Deposit Amount (LKR) *</label>
-                <input type="number" step="1000" name="amount" id="amount" class="form-control" value="<?= esc(old('amount')) ?>" required oninput="calc()">
+                <input type="number" step="any" min="1" name="amount" id="amount" class="form-control" value="<?= esc(old('amount')) ?>" required oninput="calc()">
             </div>
         </div>
 

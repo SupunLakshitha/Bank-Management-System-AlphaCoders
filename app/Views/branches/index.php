@@ -70,6 +70,7 @@
             <div class="card">
                 <h3 style="margin-bottom: 14px;">Add a branch</h3>
                 <form action="<?= base_url('branches') ?>" method="post">
+                    <?= csrf_field() ?>
                     <div class="form-row">
                         <div>
                             <label for="name">Branch name</label>

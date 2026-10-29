@@ -9,6 +9,7 @@ use App\Models\RoleModel;
 use App\Models\BranchModel;
 use App\Models\CustomerModel;
 use App\Models\AccountModel;
+use App\Services\LoginThrottle;
 
 class AuthApi extends BaseController
 {
@@ -22,6 +23,12 @@ class AuthApi extends BaseController
             return $this->response->setJSON(['error' => 'Missing username or password'])->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
 
+        $ip   = $this->request->getIPAddress();
+        $wait = LoginThrottle::secondsLeft((string) $json->username, $ip);
+        if ($wait > 0) {
+            return $this->response->setJSON(['error' => 'Too many failed login attempts. Please try again in ' . (int) ceil($wait / 60) . ' minute(s).'])->setStatusCode(429);
+        }
+
         $user = $userModel->where('username', $json->username)->first();
 
         if ($user && password_verify($json->password, $user['password_hash'])) {
@@ -29,6 +36,9 @@ class AuthApi extends BaseController
             $role = $roleModel->find($user['role_id']);
             $branch = ! empty($user['branch_id']) ? (new BranchModel())->find($user['branch_id']) : null;
 
+            LoginThrottle::clear((string) $json->username, $ip);
+
+            session()->regenerate();
             // For simplicity, we are setting session. In a real stateless API, return a JWT token.
             session()->set([
                 'user_id'     => $user['id'],
@@ -49,6 +59,8 @@ class AuthApi extends BaseController
                 ]
             ]);
         }
+
+        LoginThrottle::fail((string) $json->username, $ip);
 
         return $this->response->setJSON(['error' => 'Invalid username or password'])->setStatusCode(ResponseInterface::HTTP_UNAUTHORIZED);
     }

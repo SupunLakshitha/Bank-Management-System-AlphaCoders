@@ -32,11 +32,17 @@ $routes->group('reports', ['filter' => 'auth'], static function ($routes) {
     $routes->get('teller', 'ReportController::tellerSummary');
 });
 
-$routes->group('branches', ['filter' => 'auth'], static function ($routes) {
+$routes->group('branches', ['filter' => ['auth', 'role:SUPER ADMIN,Branch Manager']], static function ($routes) {
     $routes->get('/', 'BranchController::index');
     $routes->post('/', 'BranchController::create');
     $routes->get('(:num)', 'BranchController::show/$1');
     $routes->post('(:num)/assign', 'BranchController::assignEmployee/$1');
+});
+
+$routes->group('employees', ['filter' => ['auth', 'role:SUPER ADMIN']], static function ($routes) {
+    $routes->get('/', 'EmployeeController::index');
+    $routes->post('create', 'EmployeeController::create');
+    $routes->post('update/(:num)', 'EmployeeController::update/$1');
 });
 
 $routes->group('ledger', ['filter' => 'auth'], static function ($routes) {

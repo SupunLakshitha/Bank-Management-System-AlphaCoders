@@ -77,6 +77,7 @@
 
             <?php if ($role === 'SUPER ADMIN' && $unassignedEmployees): ?>
                 <form class="assign" style="margin-top: 16px;" action="<?= base_url('branches/' . $branch['id'] . '/assign') ?>" method="post">
+                    <?= csrf_field() ?>
                     <select name="user_id" required>
                         <option value="">Assign an employee to this branch</option>
                         <?php foreach ($unassignedEmployees as $employee): ?>

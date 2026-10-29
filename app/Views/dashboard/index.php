@@ -207,6 +207,14 @@
                 <?php endif; ?>
             </div>
         <?php endif; ?>
+        
+        <?php if ($role === 'SUPER ADMIN'): ?>
+            <div style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-left: 4px solid #ef4444; margin-bottom: 20px;">
+                <h3 style="font-size: 17px; margin-bottom: 8px; color: #1e1e2f;">Employee Management</h3>
+                <p style="color: #666; font-size: 13px; margin-bottom: 16px;">Create staff accounts and assign roles.</p>
+                <a href="<?= base_url('employees') ?>" style="display: inline-block; padding: 8px 16px; background: #ef4444; color: white; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: 600;">Manage employees &rarr;</a>
+            </div>
+        <?php endif; ?>
 
         <?php if ($role !== 'Customer'): ?>
             <div style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-left: 4px solid #4facfe; margin-bottom: 20px;">

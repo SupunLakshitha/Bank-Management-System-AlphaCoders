@@ -16,6 +16,7 @@
     <div class="card">
         <div class="card-header"><h2>New transfer</h2></div>
         <form class="pad" action="<?= base_url('transfers') ?>" method="post">
+            <?= csrf_field() ?>
             <?php if (count($accounts) < 2): ?>
                 <div class="alert alert-error">At least two active deposit accounts are needed before a transfer can be posted.</div>
             <?php endif; ?>

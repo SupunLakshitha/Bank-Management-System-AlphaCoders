@@ -69,6 +69,7 @@ class AccountService
             'balance'         => $initialDeposit,
             'interest_rate'   => $interestRate,
             'status'          => 'Active',
+            'gl_account_id'   => $this->db->table('gl_accounts')->select('id')->where('code', 'GL-20100')->get()->getRowArray()['id'] ?? null,
         ];
 
         if (!$this->accountModel->insert($accountData)) {

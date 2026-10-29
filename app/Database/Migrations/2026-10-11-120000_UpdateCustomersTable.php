@@ -57,16 +57,26 @@ class UpdateCustomersTable extends Migration
 
     public function down()
     {
-        if ($this->db->fieldExists('branch_id', 'customers')) {
+        // NOTE: use live SHOW COLUMNS queries here instead of $this->db->fieldExists().
+        // fieldExists() uses a cached column list, which can be stale when an earlier
+        // migration's down() (e.g. EnforceBranchAssociations) already dropped the column
+        // during the same rollback run.
+        if ($this->columnExists('customers', 'branch_id')) {
             try {
                 $this->db->query('ALTER TABLE customers DROP FOREIGN KEY fk_customers_branch');
             } catch (\Throwable $e) {
+                // Foreign key may not exist (or has a different name) - ignore.
             }
             $this->forge->dropColumn('customers', 'branch_id');
         }
 
-        if ($this->db->fieldExists('email', 'customers')) {
+        if ($this->columnExists('customers', 'email')) {
             $this->forge->dropColumn('customers', 'email');
         }
+    }
+
+    private function columnExists(string $table, string $column): bool
+    {
+        return $this->db->query('SHOW COLUMNS FROM `' . $table . '` LIKE ' . $this->db->escape($column))->getNumRows() > 0;
     }
 }

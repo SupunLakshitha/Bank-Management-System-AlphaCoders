@@ -16,6 +16,7 @@
 <div class="card">
     <div class="card-header"><h2>New transaction</h2></div>
     <form class="pad" action="<?= base_url('ledger/post') ?>" method="post" style="max-width: 760px;">
+        <?= csrf_field() ?>
         <div class="form-grid">
             <div class="field">
                 <label for="type">Type</label>
